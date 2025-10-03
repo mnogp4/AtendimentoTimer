@@ -152,7 +152,7 @@
         document.getElementById(`timer-${id}`).innerText = `${minutes}:${seconds}`;
         if (atendimentos[id].seconds >= 300) {
           clearInterval(atendimentos[id].timer);
-          alert(`Atendimento ${id}: 5 minutos atingidos!`);
+         
         }
       }, 1000);
     }
@@ -174,7 +174,7 @@
 
     function copyText(text) {
       navigator.clipboard.writeText(text).then(() => {
-        alert("Texto copiado!");
+       
       });
     }
 
