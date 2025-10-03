@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Painel de Atendimento - Delivery</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f8f9fa;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin: 0;
+      padding: 20px;
+    }
+    h1 {
+      margin-bottom: 20px;
+    }
+    .card {
+      background: #fff;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      margin-bottom: 20px;
+      width: 350px;
+    }
+    .row {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+    input {
+      flex: 1;
+      padding: 8px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+    }
+    .timer {
+      font-size: 18px;
+      font-weight: bold;
+      margin-top: 10px;
+      text-align: center;
+      color: #007bff;
+    }
+    .close {
+      cursor: pointer;
+      color: red;
+      font-weight: bold;
+      margin-left: 10px;
+      font-size: 20px;
+    }
+    .templates {
+      width: 350px;
+    }
+    button.copy-btn {
+      background: #007bff;
+      border: none;
+      color: white;
+      padding: 8px;
+      border-radius: 6px;
+      cursor: pointer;
+      margin-top: 5px;
+    }
+    button.copy-btn:hover {
+      background: #0056b3;
+    }
+    .text-box {
+      background: #f1f1f1;
+      padding: 8px;
+      border-radius: 6px;
+      margin-bottom: 5px;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Painel de Atendimento</h1>
+
+  <div class="card">
+    <div class="row">
+      <input id="clienteId" placeholder="ID do Cliente">
+    </div>
+    <div class="row">
+      <input id="entregadorId" placeholder="ID do Entregador">
+    </div>
+    <div class="row">
+      <span class="timer" id="timer">00:00</span>
+      <span class="close" onclick="resetAll()">✖</span>
+    </div>
+  </div>
+
+  <div class="card templates">
+    <h3>Textos Rápidos</h3>
+    <div class="text-box">Olá, estou entrando em contato sobre seu pedido.</div>
+    <button class="copy-btn" onclick="copyText('Olá, estou entrando em contato sobre seu pedido.')">Copiar</button>
+
+    <div class="text-box">Seu entregador já está a caminho, em breve chegará até você.</div>
+    <button class="copy-btn" onclick="copyText('Seu entregador já está a caminho, em breve chegará até você.')">Copiar</button>
+
+    <div class="text-box">Houve um pequeno atraso, mas seu pedido será entregue em instantes.</div>
+    <button class="copy-btn" onclick="copyText('Houve um pequeno atraso, mas seu pedido será entregue em instantes.')">Copiar</button>
+  </div>
+
+  <script>
+    let timerInterval;
+    let totalSeconds = 0;
+
+    function startTimer() {
+      clearInterval(timerInterval);
+      totalSeconds = 0;
+      timerInterval = setInterval(() => {
+        totalSeconds++;
+        let minutes = String(Math.floor(totalSeconds / 60)).padStart(2, '0');
+        let seconds = String(totalSeconds % 60).padStart(2, '0');
+        document.getElementById('timer').innerText = `${minutes}:${seconds}`;
+        if (totalSeconds >= 300) { // 5 minutos = 300s
+          clearInterval(timerInterval);
+          alert("Tempo de 5 minutos atingido!");
+        }
+      }, 1000);
+    }
+
+    function resetAll() {
+      document.getElementById("clienteId").value = "";
+      document.getElementById("entregadorId").value = "";
+      clearInterval(timerInterval);
+      document.getElementById('timer').innerText = "00:00";
+    }
+
+    function checkStart() {
+      let cliente = document.getElementById("clienteId").value.trim();
+      let entregador = document.getElementById("entregadorId").value.trim();
+      if (cliente && entregador) {
+        startTimer();
+      }
+    }
+
+    document.getElementById("clienteId").addEventListener("input", checkStart);
+    document.getElementById("entregadorId").addEventListener("input", checkStart);
+
+    function copyText(text) {
+      navigator.clipboard.writeText(text).then(() => {
+        alert("Texto copiado!");
+      });
+    }
+  </script>
+
+</body>
+</html>
