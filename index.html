@@ -32,7 +32,6 @@
       display: flex;
       gap: 10px;
       margin-bottom: 8px;
-      align-items: center;
     }
     input {
       flex: 1;
@@ -48,6 +47,16 @@
       margin-top: 5px;
       text-align: center;
       color: #00bfff;
+    }
+    .timer.alert {
+      color: #ff4c4c;
+    }
+    .close {
+      cursor: pointer;
+      color: #ff4c4c;
+      font-weight: bold;
+      margin-left: 10px;
+      font-size: 20px;
     }
     .templates {
       background: #2b2b2b;
@@ -125,7 +134,7 @@
           </div>
           <div class="row">
             <span class="timer" id="timer-${id}">00:00</span>
-            <button class="copy-btn" style="background:#ff4c4c;" id="reset-btn-${id}" onclick="resetAll(${id})">Reset</button>
+            <span class="close" onclick="resetAll(${id})">✖</span>
           </div>
         </div>
       `;
@@ -142,21 +151,18 @@
     function startTimer(id) {
       clearInterval(atendimentos[id].timer);
       atendimentos[id].seconds = 0;
-      const timerEl = document.getElementById(`timer-${id}`);
-      const resetBtn = document.getElementById(`reset-btn-${id}`);
-
+      const timerElement = document.getElementById(`timer-${id}`);
+      timerElement.classList.remove('alert');
       atendimentos[id].timer = setInterval(() => {
         atendimentos[id].seconds++;
-        let minutes = String(Math.floor(atendimentos[id].seconds / 60)).padStart(2, '0');
-        let seconds = String(atendimentos[id].seconds % 60).padStart(2, '0');
-
-        if (atendimentos[id].seconds >= 300) { // 5 minutos
+        if (atendimentos[id].seconds >= 300) {
           clearInterval(atendimentos[id].timer);
-          timerEl.innerText = "LIGAR";
-          timerEl.style.color = "red";
+          timerElement.innerText = "LIGAR";
+          timerElement.classList.add('alert');
         } else {
-          timerEl.innerText = `${minutes}:${seconds}`;
-          timerEl.style.color = "#00bfff"; // azul padrão
+          let minutes = String(Math.floor(atendimentos[id].seconds / 60)).padStart(2, '0');
+          let seconds = String(atendimentos[id].seconds % 60).padStart(2, '0');
+          timerElement.innerText = `${minutes}:${seconds}`;
         }
       }, 1000);
     }
@@ -165,9 +171,10 @@
       document.getElementById(`cliente-${id}`).value = "";
       document.getElementById(`entregador-${id}`).value = "";
       clearInterval(atendimentos[id].timer);
-      const timerEl = document.getElementById(`timer-${id}`);
-      timerEl.innerText = "00:00";
-      timerEl.style.color = "#00bfff";
+      const timerElement = document.getElementById(`timer-${id}`);
+      timerElement.innerText = "00:00";
+      timerElement.classList.remove('alert');
+      atendimentos[id].seconds = 0;
     }
 
     function checkStart(id) {
@@ -179,7 +186,9 @@
     }
 
     function copyText(text) {
-      navigator.clipboard.writeText(text).then(() => {});
+      navigator.clipboard.writeText(text).then(() => {
+       
+      });
     }
 
     window.onload = init;
