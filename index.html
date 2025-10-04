@@ -48,15 +48,18 @@
       text-align: center;
       color: #00bfff;
     }
-    .timer.alert {
-      color: #ff4c4c;
-    }
     .close {
       cursor: pointer;
       color: #ff4c4c;
       font-weight: bold;
       margin-left: 10px;
       font-size: 20px;
+    }
+    .ligar {
+      color: #ff0000;
+      font-weight: bold;
+      margin-left: 5px;
+      font-size: 16px;
     }
     .templates {
       background: #2b2b2b;
@@ -107,19 +110,20 @@
         <div class="text-box">Olá boa tarde! O entregador chegou com o seu pedido. Poderia recebê-lo?</div>
         <button class="copy-btn" onclick="copyText('Olá boa tarde! O entregador chegou com o seu pedido. Poderia recebê-lo?')">Copiar</button>
 
-        <div class="text-box">Oi, não estou conseguindo contato através do seu número de telefone :((</div>
-        <button class="copy-btn" onclick="copyText('Oi, não estou conseguindo contato através do seu número de telefone :((')">Copiar</button>
-
+        <div class="text-box">Como não foi possível realizar a entrega dentro do prazo padrão de espera de 15 minutos, o entregador precisou retornar à loja com o seu pedido, porém, podemos reenviá-lo. Você gostaria que fizéssemos o reenvio?</div>
+        <button class="copy-btn" onclick="copyText('Como não foi possível realizar a entrega dentro do prazo padrão de espera de 15 minutos, o entregador precisou retornar à loja com o seu pedido, porém, podemos reenviá-lo. Você gostaria que fizéssemos o reenvio?')">Copiar</button>
         
-        <div class="text-box">Como não foi possível o encontro com o cliente dentro do prazo padrão de espera, o entregador precisou retornar à loja com o pedido, porém, podemos reenviá-lo. Você gostaria que fizéssemos o reenvio do seu pedido?</div>
-        <button class="copy-btn" onclick="copyText('Como não foi possível o encontro com o cliente dentro do prazo padrão de espera, o entregador precisou retornar à loja com o pedido, porém, podemos reenviá-lo. Você gostaria que fizéssemos o reenvio do seu pedido?')">Copiar</button>
-      
-        <div class="text-box">Oi, o entregador está próximo, mas está com dificuldades para encontrar o local exato. Você poderia me confirmar o endereço completo e, se possível, indicar um ponto de referência?</div>
-        <button class="copy-btn" onclick="copyText('Oi, o entregador está próximo, mas está com dificuldades para encontrar o local exato. Você poderia me confirmar o endereço completo e, se possível, indicar um ponto de referência?')">Copiar</button>
+        <div class="text-box">O cliente não deu nenhum retorno por mensagem, vou tentar por ligação.</div>
+        <button class="copy-btn" onclick="copyText('O cliente não deu nenhum retorno por mensagem, vou tentar por ligação.')">Copiar</button>
+        
+        <div class="text-box">Oi, o entregador está próximo, mas está com dificuldades para encontrar o endereço exato. Você poderia me confirmar o endereço completo e, se possível, indicar um ponto de referência?</div>
+        <button class="copy-btn" onclick="copyText('Oi, o entregador está próximo, mas está com dificuldades para encontrar o endereço exato. Você poderia me confirmar o endereço completo e, se possível, indicar um ponto de referência?')">Copiar</button>
 
+        <div class="text-box">Olá, o entregador me informou deixou o seu pedido com a portaria/recepção.</div>
+        <button class="copy-btn" onclick="copyText('Olá, o entregador me informou deixou o seu pedido com a portaria/recepção.')">Copiar</button>
+        
         <div class="text-box">Lamento pelo ocorrido. Este não é o padrão do nosso atendimento, mas infelizmente alguns casos específicos acabam fugindo do nosso controle. Vou compartilhar essa situação com o nosso time de suporte para que possamos buscar melhores soluções e evitar que isso ocorra novamente. Agradecemos pelo seu feedback e pela paciência.</div>
         <button class="copy-btn" onclick="copyText('Lamento pelo ocorrido. Este não é o padrão do nosso atendimento, mas infelizmente alguns casos específicos acabam fugindo do nosso controle. Vou compartilhar essa situação com o nosso time de suporte para que possamos buscar melhores soluções e evitar que isso ocorra novamente. Agradecemos pelo seu feedback e pela paciência.')">Copiar</button>
-       
       </div>
     </div>
   </div>
@@ -139,6 +143,7 @@
           <div class="row">
             <span class="timer" id="timer-${id}">00:00</span>
             <span class="close" onclick="resetAll(${id})">✖</span>
+            <span class="ligar">LIGAR</span>
           </div>
         </div>
       `;
@@ -146,7 +151,7 @@
 
     function init() {
       const container = document.getElementById("atendimentos");
-      for (let i = 1; i <= 10; i++) {
+      for (let i = 1; i <= 6; i++) {
         container.innerHTML += criarAtendimento(i);
         atendimentos[i] = {timer: null, seconds: 0};
       }
@@ -155,18 +160,24 @@
     function startTimer(id) {
       clearInterval(atendimentos[id].timer);
       atendimentos[id].seconds = 0;
-      const timerElement = document.getElementById(`timer-${id}`);
-      timerElement.classList.remove('alert');
       atendimentos[id].timer = setInterval(() => {
         atendimentos[id].seconds++;
-        if (atendimentos[id].seconds >= 300) {
-          clearInterval(atendimentos[id].timer);
-          timerElement.innerText = "LIGAR";
-          timerElement.classList.add('alert');
+        let minutes = String(Math.floor(atendimentos[id].seconds / 60)).padStart(2, '0');
+        let seconds = String(atendimentos[id].seconds % 60).padStart(2, '0');
+        let timerElement = document.getElementById(`timer-${id}`);
+        timerElement.innerText = `${minutes}:${seconds}`;
+        
+        // Change color based on time
+        if (atendimentos[id].seconds >= 20) { // 5 minutes
+          timerElement.style.color = '#FF0000'; // Red
+        } else if (atendimentos[id].seconds >= 10) { // 3 minutes
+          timerElement.style.color = '#FFA500'; // Burnt yellow
         } else {
-          let minutes = String(Math.floor(atendimentos[id].seconds / 60)).padStart(2, '0');
-          let seconds = String(atendimentos[id].seconds % 60).padStart(2, '0');
-          timerElement.innerText = `${minutes}:${seconds}`;
+          timerElement.style.color = '#00bfff'; // Original blue
+        }
+
+        if (atendimentos[id].seconds >= 900) {
+          clearInterval(atendimentos[id].timer);
         }
       }, 1000);
     }
@@ -175,10 +186,9 @@
       document.getElementById(`cliente-${id}`).value = "";
       document.getElementById(`entregador-${id}`).value = "";
       clearInterval(atendimentos[id].timer);
-      const timerElement = document.getElementById(`timer-${id}`);
+      let timerElement = document.getElementById(`timer-${id}`);
       timerElement.innerText = "00:00";
-      timerElement.classList.remove('alert');
-      atendimentos[id].seconds = 0;
+      timerElement.style.color = '#00bfff'; // Reset to original blue
     }
 
     function checkStart(id) {
@@ -191,7 +201,6 @@
 
     function copyText(text) {
       navigator.clipboard.writeText(text).then(() => {
-       
       });
     }
 
