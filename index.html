@@ -60,6 +60,13 @@
       font-weight: bold;
       margin-left: 5px;
       font-size: 16px;
+      vertical-align: middle; /* Alinha verticalmente com o timer */
+    }
+    .timer-row {
+      display: flex;
+      align-items: center; /* Alinha itens na mesma linha */
+      justify-content: center;
+      margin-top: 5px;
     }
     .templates {
       background: #2b2b2b;
@@ -116,8 +123,8 @@
         <div class="text-box">O cliente não deu nenhum retorno por mensagem, vou tentar por ligação.</div>
         <button class="copy-btn" onclick="copyText('O cliente não deu nenhum retorno por mensagem, vou tentar por ligação.')">Copiar</button>
         
-        <div class="text-box">Oi, o entregador está próximo, mas está com dificuldades para encontrar o endereço exato. Você poderia me confirmar o endereço completo e, se possível, indicar um ponto de referência?</div>
-        <button class="copy-btn" onclick="copyText('Oi, o entregador está próximo, mas está com dificuldades para encontrar o endereço exato. Você poderia me confirmar o endereço completo e, se possível, indicar um ponto de referência?')">Copiar</button>
+        <div class="text-box">Oi, o entregador está próximo, mas está com dificuldades para encontrar o local exato. Você poderia me confirmar o endereço completo e, se possível, indicar um ponto de referência?</div>
+        <button class="copy-btn" onclick="copyText('Oi, o entregador está próximo, mas está com dificuldades para encontrar o local exato. Você poderia me confirmar o endereço completo e, se possível, indicar um ponto de referência?')">Copiar</button>
 
         <div class="text-box">Olá, o entregador me informou deixou o seu pedido com a portaria/recepção.</div>
         <button class="copy-btn" onclick="copyText('Olá, o entregador me informou deixou o seu pedido com a portaria/recepção.')">Copiar</button>
@@ -140,10 +147,10 @@
           <div class="row">
             <input id="entregador-${id}" placeholder="ID do Entregador" oninput="checkStart(${id})">
           </div>
-          <div class="row">
+          <div class="timer-row">
             <span class="timer" id="timer-${id}">00:00</span>
             <span class="close" onclick="resetAll(${id})">✖</span>
-            <span class="ligar">LIGAR</span>
+            <span class="ligar" id="ligar-${id}" style="display: none;">LIGAR</span>
           </div>
         </div>
       `;
@@ -165,15 +172,19 @@
         let minutes = String(Math.floor(atendimentos[id].seconds / 60)).padStart(2, '0');
         let seconds = String(atendimentos[id].seconds % 60).padStart(2, '0');
         let timerElement = document.getElementById(`timer-${id}`);
+        let ligarElement = document.getElementById(`ligar-${id}`);
         timerElement.innerText = `${minutes}:${seconds}`;
         
         // Change color based on time
         if (atendimentos[id].seconds >= 20) { // 5 minutes
           timerElement.style.color = '#FF0000'; // Red
+          ligarElement.style.display = 'inline'; // Show LIGAR
         } else if (atendimentos[id].seconds >= 10) { // 3 minutes
           timerElement.style.color = '#FFA500'; // Burnt yellow
+          ligarElement.style.display = 'none'; // Hide LIGAR
         } else {
           timerElement.style.color = '#00bfff'; // Original blue
+          ligarElement.style.display = 'none'; // Hide LIGAR
         }
 
         if (atendimentos[id].seconds >= 900) {
@@ -187,8 +198,10 @@
       document.getElementById(`entregador-${id}`).value = "";
       clearInterval(atendimentos[id].timer);
       let timerElement = document.getElementById(`timer-${id}`);
+      let ligarElement = document.getElementById(`ligar-${id}`);
       timerElement.innerText = "00:00";
       timerElement.style.color = '#00bfff'; // Reset to original blue
+      ligarElement.style.display = 'none'; // Hide LIGAR
     }
 
     function checkStart(id) {
