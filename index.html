@@ -176,10 +176,10 @@
         timerElement.innerText = `${minutes}:${seconds}`;
         
         // Change color based on time
-        if (atendimentos[id].seconds >= 20) { // 5 minutes
+        if (atendimentos[id].seconds >= 300) { // 5 minutes
           timerElement.style.color = '#FF0000'; // Red
           ligarElement.style.display = 'inline'; // Show LIGAR
-        } else if (atendimentos[id].seconds >= 10) { // 3 minutes
+        } else if (atendimentos[id].seconds >= 180) { // 3 minutes
           timerElement.style.color = '#FFA500'; // Burnt yellow
           ligarElement.style.display = 'none'; // Hide LIGAR
         } else {
